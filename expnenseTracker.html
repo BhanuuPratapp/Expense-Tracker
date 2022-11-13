@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -95,36 +96,39 @@ function showListOfRegistered(categories){
     }
     */
     var parentNode4 = document.getElementById('listofCategories');
-    console.log(categories)
-    console.log(categories.expenseamount)
-    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${categories.expenseamount}','${categories.description}','${categories.category}')>Edit</button> </li>`
+
+    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${categories.expenseamount}','${categories.description}','${categories.category}','${categories.id}')>Edit</button> </li>`
     parentNode4.innerHTML = parentNode4.innerHTML + childNode4;
 }
 
-function editRegistered(expanse1, amount1, category1)
+function editRegistered(expanse1, amount1, category, id)
 {
 
 document.getElementById('expanseamount').value = expanse1;
 document.getElementById('description').value = amount1;
-document.getElementById('category').value = category1;
+document.getElementById('category').value = category;
 
-deleteRegistered(category1)
+deleteRegistered(id)
 }
 
 async function deleteRegistered(ID){
   try{
-  let response = await axios.delete(`http://localhost:3000/user/delete-users/${ID}`)
-  }               
+  removeRegistered(ID);
+  await axios.delete(`http://localhost:3000/user/delete-users/${ID}`)
+
+  }   
+            
  catch(err) {console.log(err)}
-   removeRegistered(ID);
+
+
    // localStorage.removeItem(cate);
     //removeRegistered(cate);
 }
 
-function removeRegistered(ID){
+function removeRegistered(IDs){
 
   var parentNode1 = document.getElementById('listofCategories');
-                    const childNodeToBeDeleted2 = document.getElementById(ID);
+                    const childNodeToBeDeleted2 = document.getElementById(IDs);
                    // console.log(category2)
                    // console.log(childNodeToBeDeleted)
                     if(childNodeToBeDeleted2)
