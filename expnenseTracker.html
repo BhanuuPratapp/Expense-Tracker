@@ -97,16 +97,16 @@ function showListOfRegistered(categories){
     */
     var parentNode4 = document.getElementById('listofCategories');
 
-    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${categories.expenseamount}','${categories.description}','${categories.category}','${categories.id}')>Edit</button> </li>`
+    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${encodeURIComponent(categories.expenseamount)}','${encodeURIComponent(categories.description)}','${encodeURIComponent(categories.category)}','${categories.id}')>Edit</button> </li>`
     parentNode4.innerHTML = parentNode4.innerHTML + childNode4;
 }
 
 function editRegistered(expanse1, amount1, category, id)
 {
 
-document.getElementById('expanseamount').value = expanse1;
-document.getElementById('description').value = amount1;
-document.getElementById('category').value = category;
+document.getElementById('expanseamount').value = decodeURIComponent(expanse1);
+document.getElementById('description').value = decodeURIComponent(amount1);
+document.getElementById('category').value = decodeURIComponent(category);
 
 deleteRegistered(id)
 }
@@ -124,6 +124,7 @@ async function deleteRegistered(ID){
    // localStorage.removeItem(cate);
     //removeRegistered(cate);
 }
+
 
 function removeRegistered(IDs){
 
