@@ -1,42 +1,62 @@
 function userDetails(event) {
-                  
-
+    
     event.preventDefault();
-    const name = event.target.signupUsername.value;
+    const username = event.target.signupUsername.value;
   
     const email = event.target.signupEmail.value;
 
     const password = event.target.signupPassword.value;
-
-    const confirm_password = event.target.signupconfirmPassword.value;
-                 
-  
+              
     const obj = {
-        name,
+
+        username,
         email,
-        password
+        password,
         
     }
    
-  axios.post("http://localhost:4000/user/sign-up",obj)
-   .then((response2) =>{
+  axios.post("http://localhost:1000/user/sign-up",obj)
+   .then((response) =>{
     
-    if(response2.status === 201)
+    if(response.status === 201)
     {
-    console.log(response2)
+    console.log(response)
     }
-   // showListofRegisteredUser(response2.data.newUserDetail);
-       //console.log(response2)
+
    })
    .catch((err) => {
-  //  document.body.innerHTML = document.body.innerHTML + "<h4>Error: Something Not found</h4>" 
+   
    console.log(err)
+   
    })
-   //localStorage.setItem(obj.email,JSON.stringify(obj));
-  //  showListofRegisteredUser(obj);
+ 
 }
 
 
+function  loginDetails(event){
+    event.preventDefault();
+    
+  
+    const email = event.target.loginEmail.value;
+
+    const password = event.target.loginPassword.value;
+              
+    const obj = {
+
+       
+        email,
+        password,
+        
+    }
+    axios.post("http://localhost:1000/user/log-in", obj)
+    .then(result =>{
+        if(result.status === 201){
+        window.location.replace("./expenseTracker.html")
+        }
+    }
+        )
+    .catch(err => console.log(err))
+}
 function setFormMessage(formElement, type, message) {
     const messageElement = formElement.querySelector(".form__message");
 

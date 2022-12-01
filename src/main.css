@@ -16,6 +16,14 @@ body {
     background-size: cover;
 }
 
+input:required:invalid, input:focus:invalid {
+    border-color: red; 
+    
+}
+input:required:valid {
+    border-color:green;
+}
+
 .container {
     width: 400px;
     max-width: 400px;
