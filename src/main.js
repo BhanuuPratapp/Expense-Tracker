@@ -51,6 +51,7 @@ function  loginDetails(event){
     axios.post("http://localhost:1000/user/log-in", obj)
     .then(result =>{
         if(result.status === 201){
+            localStorage.setItem('token', result.data.token);
         window.location.replace("./expenseTracker.html")
         }
     }
