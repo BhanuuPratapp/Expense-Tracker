@@ -1,3 +1,15 @@
+const token = localStorage.getItem('token');
+/*
+const form=document.getElementById('container')
+form.addEventListener('click',(e)=>{
+    e.preventDefault();
+    if(e.target.className=="forgotbutton"){
+        window.location.replace('./forgotpassword.html')
+
+    }
+
+})
+  */ 
 function userDetails(event) {
     
     event.preventDefault();
@@ -15,7 +27,7 @@ function userDetails(event) {
         
     }
    
-  axios.post("http://localhost:1000/user/sign-up",obj)
+  axios.post("http://localhost:1000/user/sign-up",obj,{headers: {"Authorization": token}})
    .then((response) =>{
     
     if(response.status === 201)
@@ -52,12 +64,21 @@ function  loginDetails(event){
     .then(result =>{
         if(result.status === 201){
             localStorage.setItem('token', result.data.token);
-        window.location.replace("./expenseTracker.html")
+        window.location.replace("./expense.html")
         }
     }
         )
     .catch(err => console.log(err))
 }
+const forgotpassword=document.getElementById('linkForgotPassword')
+forgotpassword.addEventListener('click',(e)=>{
+    e.preventDefault();
+    if(e.target.className=="form__link"){
+        window.location.replace('./forgotpassword.html')
+
+    }
+
+})
 function setFormMessage(formElement, type, message) {
     const messageElement = formElement.querySelector(".form__message");
 

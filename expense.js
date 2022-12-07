@@ -1,43 +1,5 @@
+const leaderboard = document.getElementById("leaderboard");
 
-
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-
-
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Forms</title>
-
-
-    </head>
-
-
-<body>
-  <form onsubmit="saveToLocalStorage(event)">
-    <label> Expanse amount </label>
-    <input id="expanseamount" type="text"  name="amount" required/>
-    <label> Choose description </label>
-    <input id="description" type="text"  name="chooseDescription" required/>
-    <label> Choose Category </label>
-    <select name="Languages" id="category">
-      <option value="">--Please choose an category--</option>
-      <option value="Movies" >Movies</option>
-      <option value="Health and Safety">Health and Safety</option>
-      <option value="Gardening">Gardening</option>
-      <option value="Decoration">Decoration</option>
-      <option value="Cleanng">Cleaning</option>
-    </select>   
-    <button> Submit </button>
-  </form>
-<ul id="listofCategories"></ul>
-
-<button id="rzp-button1">Buy Premium</button>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
-  <script>
 
   async function saveToLocalStorage(event){
     try{
@@ -56,7 +18,7 @@
    
    let result = await axios.post("http://localhost:1000/user/add-users",obj,{headers: {"Authorization": token}})
     
-     console.log("bhanuuuuuuuu")   
+       console.log("resulttttttttttttttttttttttttttttt",result)
         showListOfRegistered(result.data.newUserDetail);
     
                
@@ -110,7 +72,7 @@ function showListOfRegistered(categories){
 
 function editRegistered(expanse1, amount1, category, id)
 {
-console.log(id)
+
 document.getElementById('expanseamount').value = decodeURIComponent(expanse1);
 document.getElementById('description').value = decodeURIComponent(amount1);
 document.getElementById('category').value = decodeURIComponent(category);
@@ -120,10 +82,11 @@ deleteRegistered(id)
 
 async function deleteRegistered(ID){
   try{
-
-   
+    const token = localStorage.getItem('token');
+    const id = {ID};   
   removeRegistered(ID);
-  await axios.delete(`http://localhost:1000/user/delete-users/${ID}`)
+  //await axios.delete(`http://localhost:1000/user/delete-users/${ID}`,{headers: {"Authorization": token}})
+  await axios.post('http://localhost:1000/user/delete-users',id,{headers: {"Authorization": token}})
 
   }   
             
@@ -149,10 +112,12 @@ function removeRegistered(IDs){
 }
 
 
+
+
 document.getElementById('rzp-button1').onclick = async function (e) {
     const token = localStorage.getItem('token');
     const response  = await axios.get('http://localhost:1000/purchase/premiummembership', { headers: {"Authorization" : token} });
-    console.log(response);
+   
     var options =
     {
      "key": response.data.key_id, // Enter the Key ID generated from the Dashboard
@@ -172,8 +137,14 @@ document.getElementById('rzp-button1').onclick = async function (e) {
          axios.post('http://localhost:1000/purchase/updatetransactionstatus',{
              order_id: options.order_id,
              payment_id: response.razorpay_payment_id,
-         }, { headers: {"Authorization" : token} }).then(() => {
-             alert('You are a Premium User Now')
+         }, { headers: {"Authorization" : token} }).then((response) => {
+            if(response.status === 202)
+            {
+               darktheme();
+              alert('You are a Premium User Now')
+            }
+         
+             
          }).catch(() => {
              alert('Something went wrong. Try Again!!!')
          })
@@ -194,6 +165,68 @@ document.getElementById('rzp-button1').onclick = async function (e) {
  });
 }
 
-</script>
-</body>
-</html>
+
+async function is__premium() {
+    let obj = {
+      id: 123,
+    };
+    const token = localStorage.getItem("token");
+    await axios
+      .post("http://localhost:1000/is_premium", obj, {
+        headers: { Authorization: token },
+      })
+      .then((res) => {
+        // console.log(res.data.ispremium)
+        if (res.data.ispremium) {
+          const body = document.body;
+          const i1 = document.getElementById("expenseform");
+          const i2 = document.getElementById("expenses");
+          body.classList.add("active");
+          i1.classList.add("active1");
+          i2.classList.add("active1");
+          //adding leaderboard to the premium users
+          axios
+            .get("http://localhost:1000/leaderboard", {
+              headers: { Authorization: token },
+            })
+            .then((users) => {
+              // console.log(users.data.users)
+  
+              for (let i = 0; i < users.data.users.length; i++) {
+                const expensediv = document.createElement("div");
+                expensediv.classList.add("expensediv");
+                expensediv.innerHTML = `
+                    <span>${i + 1}</span>
+                    <span class="desc1"}>${users.data.users[i].username}</span>
+                    <span class="category"id="category">${
+                      users.data.users[i].totalexpense
+                    }</span>
+                    `;
+  
+                leaderboard.appendChild(expensediv);
+              }
+            })
+            .catch((err) => console.log(err));
+        }
+      })
+      .catch((err) => console.log(err));
+    document.getElementById("rzp-button1").classList.add("hide");
+  }
+
+function darktheme()
+
+{
+  let dark = document.getElementById('toggle-container')
+
+  var innerhtml = `
+  <input type="checkbox" id="toggle" name="toggle"><label for="toggle"></label>
+`
+dark.innerHTML = innerhtml;
+
+const toggle = document.getElementById("toggle")
+
+toggle.addEventListener('change', (e) =>{
+    document.body.classList.toggle('dark', e.target.checked)
+})
+
+}
